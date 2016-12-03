@@ -628,7 +628,7 @@ public:
 	FORCEINLINE void drawscanline(const PolygonAttributes &polyAttr, FragmentColor *dstColor, const size_t framebufferWidth, const size_t framebufferHeight, edge_fx_fl *pLeft, edge_fx_fl *pRight, bool lineHack)
 	{
 		int XStart = pLeft->X;
-		int width = pRight->X - XStart;
+		int width = pRight->X - XStart + 1;
 
 		// HACK: workaround for vertical/slant line poly
 		if (lineHack && width == 0)
@@ -699,7 +699,7 @@ public:
 			width -= -x;
 			x = 0;
 		}
-		if (x+width > framebufferWidth)
+		if ( (x+width - 1) > framebufferWidth)
 		{
 			if (RENDERER && !lineHack && framebufferWidth == GPU_FRAMEBUFFER_NATIVE_WIDTH)
 			{
@@ -1274,7 +1274,7 @@ template<bool CUSTOM> void SoftRasterizerRenderer::performViewportTransforms()
 			//viewport transformation
 			viewport.decode(poly.poly->viewport);
 			vert.coord[0] *= viewport.width * xfactor;
-			vert.coord[0] += viewport.x * xfactor;
+			vert.coord[0] += (viewport.x - 1) * xfactor;
 			vert.coord[1] *= viewport.height * yfactor;
 			vert.coord[1] += viewport.y * yfactor;
 			vert.coord[1] = ymax - vert.coord[1];
